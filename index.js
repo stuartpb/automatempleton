@@ -44,19 +44,8 @@ var timerId;
 var popWaiting = false;
 
 var outFilename = targetTemplate + '.yaml';
-var outFile = fs.openSync(outFilename, 'a+');
-var readStream = fs.createWriteStream(outFilename,
-  {encoding:'utf8', fd: outFile, autoClose: false});
-var existingContent;
-var chunk = readStream.read();
-while (chunk) {
-  existingContent += chunk;
-  chunk = readStream.read();
-}
+var outFile;
 var existing = Object.create(null);
-if (existingContent) {
-  existing = yaml.load(existingContent);
-}
 
 //Reset the pages data from an API response.
 function populatePagesArray(err, code, body) {
@@ -135,7 +124,7 @@ function handlePage (err, code, body) {
     var templateContent = findTemplate(content);
     if (templateContent) {
       var record = Object.create(null);
-      record[page.title] = parseTemplate(templateContent);
+      record[page.title] = templateContent;//parseTemplate(templateContent);
       fs.writeSync(outFile,yaml.dump(record));
     } else {
       console.error("Warning: template not found on " + page.title);
@@ -155,8 +144,10 @@ function queryPage(page) {
   //Only query pages in the main namespace
   if (page.ns != 0){
     console.log('Skipping non-article '+page.title);
+    timer_cb();
   } else if (existing[page.title]) {
     console.log('Skipping existing '+page.title);
+    timer_cb();
   } else {
     console.log('Getting content for '+page.title);
     wpApiQuery({
@@ -214,6 +205,16 @@ if(!targetTemplate) {
 } else if (!outFilename) {
   console.error('This script must be run with an output filename.');
 } else {
+  try {
+  var existingContent = fs.readFileSync(outFilename,'utf8');
+  } catch(e){}
+
+  if (existingContent) {
+    existing = yaml.load(existingContent);
+  }
+
+  outFile = fs.openSync(outFilename, 'a');
+
   console.log('Getting pages for "'+targetTemplate+'"...');
   timerId = setInterval(timer_cb,250);
 }
