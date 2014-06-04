@@ -1,0 +1,25 @@
+{
+  "name": "automatempleton",
+  "version": "0.0.0",
+  "description": "Extracts transclusions of templates from MediaWiki pages",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/stuartpb/automatempleton.git"
+  },
+  "keywords": [
+    "mediawiki"
+  ],
+  "author": "Stuart P. Bentley <stuart@testtrack4.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stuartpb/automatempleton/issues"
+  },
+  "homepage": "https://github.com/stuartpb/automatempleton",
+  "dependencies": {
+    "js-yaml": "^3.0.2"
+  }
+}
